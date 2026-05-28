@@ -1,0 +1,241 @@
+/* =========================
+   RESPONSIVE CSS
+========================= */
+
+@media (max-width: 768px){
+
+    .header{
+        height:auto;
+        padding:15px 20px;
+        flex-direction:column;
+        align-items:flex-start;
+    }
+
+    .navbar{
+        width:100%;
+        position:relative;
+    }
+
+    .hamburger{
+        display:block;
+        position:absolute;
+        top:-55px;
+        right:10px;
+        font-size:28px;
+        cursor:pointer;
+        color:white;
+    }
+
+    .nav-links{
+        position:absolute;
+        top:60px;
+        left:0;
+        width:100%;
+        background:#0b1324;
+        flex-direction:column;
+        display:none;
+        padding:20px 0;
+        z-index:999;
+        border-radius:10px;
+    }
+
+    .nav-links.active{
+        display:flex;
+    }
+
+    .nav-links li{
+        width:100%;
+        text-align:center;
+        margin:10px 0;
+    }
+
+    .nav-links li a{
+        display:block;
+        padding:12px;
+    }
+
+    .call-btn{
+        display:none;
+    }
+
+    .hero{
+        height:auto;
+        padding:120px 20px 80px;
+        text-align:center;
+    }
+
+    .hero-content{
+        width:100%;
+    }
+
+    .hero-content h1{
+        font-size:42px;
+        line-height:1.2;
+    }
+
+    .hero-content p{
+        font-size:17px;
+        margin-top:15px;
+    }
+
+    .hero-buttons{
+        display:flex;
+        flex-direction:column;
+        align-items:center;
+        gap:15px;
+        margin-top:25px;
+    }
+
+    .btn-primary,
+    .btn-secondary{
+        width:100%;
+        max-width:260px;
+        text-align:center;
+        display:inline-block;
+    }
+
+    .section,
+    .about,
+    .contact,
+    .project-slider,
+    .stats{
+        padding:70px 20px;
+    }
+
+    .grid{
+        grid-template-columns:1fr;
+    }
+
+    .project-card img{
+        height:220px;
+    }
+
+    .slide-text h3{
+        font-size:22px;
+    }
+
+    .slide-text p{
+        font-size:14px;
+    }
+
+    .about{
+        text-align:center;
+    }
+
+    .about h2{
+        font-size:30px;
+    }
+
+    .about p{
+        font-size:15px;
+        line-height:1.7;
+    }
+
+    .contact{
+        text-align:center;
+    }
+
+    .contact-form{
+        width:100%;
+    }
+
+    .contact input,
+    .contact textarea{
+        width:100%;
+    }
+
+    .stat-box{
+        width:100%;
+    }
+
+    footer{
+        text-align:center;
+        padding:20px;
+        font-size:14px;
+    }
+
+    .whatsapp-float{
+        width:55px;
+        height:55px;
+        font-size:28px;
+        right:15px;
+        bottom:15px;
+    }
+}
+
+/* =========================
+   SMALL MOBILE
+========================= */
+
+@media (max-width: 480px){
+
+    .logo-box img{
+        width:50px;
+    }
+
+    .logo-text h2{
+        font-size:20px;
+    }
+
+    .logo-text p{
+        font-size:11px;
+    }
+
+    .hero-content h1{
+        font-size:32px;
+    }
+
+    .hero-content p{
+        font-size:14px;
+    }
+
+    .section-title{
+        font-size:28px;
+    }
+
+    .project-card img{
+        height:200px;
+    }
+
+    .slide-text{
+        padding:15px;
+    }
+
+    .slide-text h3{
+        font-size:20px;
+    }
+
+    .slide-text p{
+        font-size:13px;
+    }
+
+    .contact p{
+        font-size:15px;
+    }
+
+    .contact-box{
+        padding:20px;
+    }
+
+    .contact-box h2{
+        font-size:22px;
+    }
+
+    .stat-box h2{
+        font-size:28px;
+    }
+
+    .stat-box p{
+        font-size:14px;
+    }
+}
+@media (max-width:600px){
+
+    .contact-box{
+        padding:20px;
+    }
+
+    .contact-box h2{
+        font-size:22px;
+    }
+}

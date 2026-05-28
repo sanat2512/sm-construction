@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Edit Project</title>
+
+    <!-- MAIN CSS -->
+    <link rel="stylesheet"
+          href="{{ url_for('static',
+          filename='css/style.css') }}">
+
+    <style>
+
+        body{
+            margin:0;
+            padding:0;
+
+            background:
+            linear-gradient(rgba(7,18,35,0.92),
+            rgba(7,18,35,0.95)),
+            url('https://images.unsplash.com/photo-1504307651254-35680f356dfd?q=80&w=1600');
+
+            background-size:cover;
+            background-position:center;
+
+            min-height:100vh;
+
+            display:flex;
+            justify-content:center;
+            align-items:center;
+
+            font-family:Arial;
+            color:white;
+        }
+
+        /* CONTAINER */
+        .container{
+            width:90%;
+            max-width:750px;
+            padding:40px 0;
+        }
+
+        /* CARD */
+        .card{
+
+            background:rgba(16,28,51,0.96);
+
+            backdrop-filter:blur(10px);
+
+            border-radius:25px;
+
+            padding:35px;
+
+            border:1px solid rgba(255,255,255,0.08);
+
+            box-shadow:
+            0 10px 40px rgba(0,0,0,0.45);
+
+            animation:fadeUp 0.7s ease;
+        }
+
+        /* TITLE */
+        h1{
+            text-align:center;
+            color:#ffbf24;
+            margin-bottom:30px;
+            font-size:34px;
+            letter-spacing:1px;
+        }
+
+        /* PROJECT IMAGE */
+        .project-image{
+            width:100%;
+            height:320px;
+
+            object-fit:cover;
+
+            border-radius:18px;
+
+            border:3px solid rgba(255,191,36,0.2);
+
+            margin-bottom:30px;
+
+            transition:0.4s ease;
+        }
+
+        .project-image:hover{
+            transform:scale(1.01);
+        }
+
+        /* FORM */
+        form{
+            display:flex;
+            flex-direction:column;
+            gap:18px;
+        }
+
+        /* LABEL */
+        label{
+            color:#ffbf24;
+            font-weight:bold;
+            margin-bottom:-10px;
+        }
+
+        /* INPUTS */
+        input,
+        textarea,
+        select{
+
+            width:100%;
+
+            padding:15px;
+
+            border:none;
+
+            outline:none;
+
+            border-radius:12px;
+
+            background:#0b1324;
+
+            color:white;
+
+            font-size:15px;
+
+            transition:0.3s ease;
+
+            box-sizing:border-box;
+        }
+
+        input:focus,
+        textarea:focus,
+        select:focus{
+
+            border:1px solid #ffbf24;
+
+            box-shadow:
+            0 0 15px rgba(255,191,36,0.25);
+        }
+
+        textarea{
+            resize:none;
+        }
+
+        /* FILE INPUT */
+        input[type="file"]{
+            cursor:pointer;
+        }
+
+        /* BUTTON */
+        .btn{
+
+            background:
+            linear-gradient(45deg,#ffbf24,#ff9f00);
+
+            color:black;
+
+            border:none;
+
+            padding:15px;
+
+            border-radius:12px;
+
+            font-size:16px;
+            font-weight:bold;
+
+            cursor:pointer;
+
+            transition:0.3s ease;
+        }
+
+        .btn:hover{
+
+            transform:translateY(-3px);
+
+            background:
+            linear-gradient(45deg,#ffd54f,#ffbf24);
+
+            box-shadow:
+            0 10px 20px rgba(255,191,36,0.25);
+        }
+
+        /* BACK BUTTON */
+        .back{
+
+            display:inline-flex;
+
+            align-items:center;
+
+            gap:8px;
+
+            margin-top:25px;
+
+            text-decoration:none;
+
+            color:#ffbf24;
+
+            font-weight:bold;
+
+            transition:0.3s ease;
+        }
+
+        .back:hover{
+
+            color:white;
+
+            transform:translateX(-3px);
+        }
+
+        /* ANIMATION */
+        @keyframes fadeUp{
+
+            from{
+                opacity:0;
+                transform:translateY(30px);
+            }
+
+            to{
+                opacity:1;
+                transform:translateY(0);
+            }
+        }
+
+        /* MOBILE */
+        @media(max-width:768px){
+
+            body{
+                align-items:flex-start;
+            }
+
+            .container{
+                width:95%;
+                padding:20px 0;
+            }
+
+            .card{
+                padding:25px;
+                border-radius:20px;
+            }
+
+            h1{
+                font-size:28px;
+            }
+
+            .project-image{
+                height:220px;
+            }
+
+            input,
+            textarea,
+            select{
+                padding:13px;
+                font-size:14px;
+            }
+
+            .btn{
+                width:100%;
+            }
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="card">
+
+        <h1>Edit Project</h1>
+
+        <img class="project-image"
+             src="{{ url_for('static',
+             filename='uploads/' + project.image) }}">
+
+        <form method="POST"
+              enctype="multipart/form-data">
+
+            <label>Project Title</label>
+
+            <input type="text"
+                   name="title"
+                   value="{{ project.title }}"
+                   required>
+
+            <label>Description</label>
+
+            <textarea name="description"
+                      rows="5"
+                      required>{{ project.description }}</textarea>
+
+            <label>Location</label>
+
+            <input type="text"
+                   name="location"
+                   value="{{ project.location }}"
+                   required>
+
+            <label>Completion Year</label>
+
+            <input type="text"
+                   name="completion_year"
+                   value="{{ project.completion_year }}"
+                   required>
+
+            <label>Client Name</label>
+
+            <input type="text"
+                   name="client"
+                   value="{{ project.client }}"
+                   required>
+
+            <label>Select Service</label>
+
+            <select name="service_id" required>
+
+                {% for service in services %}
+
+                <option value="{{ service.id }}"
+                {% if service.id == project.service_id %}
+                selected
+                {% endif %}>
+
+                    {{ service.name }}
+
+                </option>
+
+                {% endfor %}
+
+            </select>
+
+            <label>Change Project Image</label>
+
+            <input type="file"
+                   name="image">
+
+            <button class="btn"
+                    type="submit">
+
+                Update Project
+
+            </button>
+
+        </form>
+
+        <a class="back"
+           href="/admin">
+
+           ← Back To Admin
+
+        </a>
+
+    </div>
+
+</div>
+
+</body>
+</html>
