@@ -6,6 +6,14 @@ from functools import wraps
 import os
 import uuid
 import pymysql
+import cloudinary
+import cloudinary.uploader
+
+cloudinary.config(
+    cloud_name="dzlskdwgd",
+    api_key="234567384978218",
+    api_secret="YOUR_API_SECRET"
+)
 
 pymysql.install_as_MySQLdb()
 
@@ -376,77 +384,40 @@ def admin():
 
     if request.method == "POST":
 
-        image = request.files.get(
-            "image"
-        )
+        image = request.files.get("image")
 
-        if image and allowed_file(
-            image.filename
-        ):
+        if image and allowed_file(image.filename):
 
-            filename = (
-                str(uuid.uuid4()) +
-                "_" +
-                secure_filename(
-                    image.filename
-                )
-            )
-
-            image.save(
-                os.path.join(
-                    UPLOAD_FOLDER,
-                    filename
-                )
-            )
+            # ✅ upload to cloudinary
+            result = cloudinary.uploader.upload(image)
+            image_url = result["secure_url"]
 
             project = Project(
-                title=request.form.get(
-                    "title"
-                ),
-
-                description=request.form.get(
-                    "description"
-                ),
-
-                image=filename,
-
-                location=request.form.get(
-                    "location"
-                ),
-
-                completion_year=request.form.get(
-                    "completion_year"
-                ),
-
-                client=request.form.get(
-                    "client"
-                ),
-
-                service_id=request.form.get(
-                    "service_id"
-                )
+                title=request.form.get("title"),
+                description=request.form.get("description"),
+                image=image_url,
+                location=request.form.get("location"),
+                completion_year=request.form.get("completion_year"),
+                client=request.form.get("client"),
+                service_id=request.form.get("service_id")
             )
 
             db.session.add(project)
-
             db.session.commit()
 
-            gallery_files = request.files.getlist(
-                "gallery_images"
-            )
+            # =========================
+            # GALLERY IMAGES (STILL LOCAL)
+            # =========================
+            gallery_files = request.files.getlist("gallery_images")
 
             for file in gallery_files:
 
-                if file and allowed_file(
-                    file.filename
-                ):
+                if file and allowed_file(file.filename):
 
                     gname = (
                         str(uuid.uuid4()) +
                         "_" +
-                        secure_filename(
-                            file.filename
-                        )
+                        secure_filename(file.filename)
                     )
 
                     file.save(
@@ -467,23 +438,17 @@ def admin():
 
     total_msgs = Contact.query.count()
 
-    unread_msgs = Contact.query.filter_by(
-        is_read=False
-    ).count()
+    unread_msgs = Contact.query.filter_by(is_read=False).count()
 
-    read_msgs = Contact.query.filter_by(
-        is_read=True
-    ).count()
+    read_msgs = Contact.query.filter_by(is_read=True).count()
 
     project_images = {}
 
     for p in Project.query.all():
 
-        project_images[p.id] = (
-            ProjectImage.query.filter_by(
-                project_id=p.id
-            ).all()
-        )
+        project_images[p.id] = ProjectImage.query.filter_by(
+            project_id=p.id
+        ).all()
 
     return render_template(
         "admin.html",
@@ -495,7 +460,6 @@ def admin():
         read_msgs=read_msgs,
         project_images=project_images
     )
-
 
 # =========================
 # ADD SERVICE
