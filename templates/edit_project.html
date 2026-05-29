@@ -277,9 +277,8 @@
         <h1>Edit Project</h1>
 
         <img class="project-image"
-             src="{{ url_for('static',
-             filename='uploads/' + project.image) }}">
-
+     src="{% if 'http' in project.image %}{{ project.image }}{% else %}{{ url_for('static', filename='uploads/' + project.image) }}{% endif %}"
+     alt="{{ project.title }}">
         <form method="POST"
               enctype="multipart/form-data">
 

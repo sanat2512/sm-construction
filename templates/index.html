@@ -173,9 +173,10 @@ content="SM Construction is a trusted construction company in Madhya Pradesh off
 
             <div class="project-card">
 
-                <img src="{{ url_for('static',
-                filename='uploads/' + service.image) }}"
-                alt="{{ service.name }}">
+                {% set img = service.image %}
+
+<img src="{{ img if img and 'http' in img else url_for('static', filename='uploads/' + img) }}"
+     alt="{{ service.name }}">
 
                 <div class="project-overlay">
 
@@ -252,8 +253,7 @@ content="SM Construction is a trusted construction company in Madhya Pradesh off
                class="swiper-slide"
                style="text-decoration:none;color:white;">
 
-                <img src="{{ url_for('static',
-                filename='uploads/' + project.image) }}"
+                <img src="{{ project.image if project.image and 'http' in project.image else url_for('static', filename='uploads/' + project.image) }}">
                 alt="{{ project.title }}">
 
                 <div class="slide-text">

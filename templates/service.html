@@ -31,7 +31,7 @@
 
             background-image: linear-gradient(rgba(0, 0, 0, 0.6),
                 rgba(0, 0, 0, 0.6)),
-            url('{{ url_for("static", filename="uploads/" + service.image) }}');
+            url('{% if "http" in service.image %}{{ service.image }}{% else %}{{ url_for("static", filename="uploads/" + service.image) }}{% endif %}');
 
             background-size: cover;
             background-position: center;
@@ -285,11 +285,7 @@
             <a href="/project/{{ project.id }}" style="text-decoration:none;color:white;">
 
                 <div class="project-card">
-
-                    <img src="{{ url_for(
-        'static',
-        filename='uploads/' + project.image) }}" alt="{{ project.title }}">
-
+<img src="{{ project.image }}" alt="{{ project.title }}">
                     <div class="project-content">
 
                         <h3>

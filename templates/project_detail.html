@@ -390,10 +390,10 @@
 
     <!-- MAIN IMAGE -->
 
-    <img class="project-image"
-         src="{{ url_for('static',
-         filename='uploads/' + project.image) }}"
-         alt="{{ project.title }}">
+    {% set img = project.image %}
+<img class="project-image"
+     src="{{ img if img and 'http' in img else url_for('static', filename='uploads/' + img) }}"
+     alt="{{ project.title }}">
 
     <!-- DESCRIPTION -->
 
@@ -497,10 +497,7 @@
             {% for image in gallery %}
 
             <img class="gallery-image"
-                 src="{{ url_for(
-                 'static',
-                 filename='uploads/' + image.image
-                 ) }}"
+                 src="{{ image.image if image.image and 'http' in image.image else url_for('static', filename='uploads/' + image.image) }}"
                  alt="Project Gallery Image">
 
             {% endfor %}
