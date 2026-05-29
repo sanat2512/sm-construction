@@ -4,3 +4,4 @@ gunicorn
 Werkzeug
 PyMySQL==1.1.1
 python-dotenv
+cloudinary
