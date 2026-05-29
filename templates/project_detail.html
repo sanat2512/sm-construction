@@ -41,23 +41,28 @@
 
         .hero{
 
-    min-height:70vh;
+            min-height:70vh;
 
-    background:
-    linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)),
-    url('{{ url_for("static", filename="uploads/" + project.image) }}');
+            background:
+            linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)),
 
-    background-size:cover;
-    background-position:center;
+            url('{% if project.image %}
+                    {{ project.image if "http" in project.image else url_for("static", filename="uploads/" + project.image) }}
+                 {% else %}
+                    {{ url_for("static", filename="img/default.jpg") }}
+                 {% endif %}');
 
-    display:flex;
-    justify-content:center;
-    align-items:center;
+            background-size:cover;
+            background-position:center;
 
-    text-align:center;
+            display:flex;
+            justify-content:center;
+            align-items:center;
 
-    padding:40px 20px;
-}
+            text-align:center;
+
+            padding:40px 20px;
+        }
 
         .hero-content h1{
 
@@ -75,8 +80,6 @@
             color:#ddd;
         }
 
-        /* MAIN */
-
         .container{
 
             width:100%;
@@ -87,8 +90,6 @@
 
             padding:80px 20px;
         }
-
-        /* MAIN IMAGE */
 
         .project-image{
 
@@ -112,8 +113,6 @@
 
             transform:scale(1.02);
         }
-
-        /* CONTENT */
 
         .content-box{
 
@@ -143,8 +142,6 @@
 
             font-size:18px;
         }
-
-        /* INFO GRID */
 
         .info-grid{
 
@@ -190,8 +187,6 @@
             color:#ddd;
         }
 
-        /* BACK BUTTON */
-
         .back-btn{
 
             display:inline-block;
@@ -219,8 +214,6 @@
 
             transform:translateY(-3px);
         }
-
-        /* GALLERY */
 
         .gallery-grid{
 
@@ -259,8 +252,6 @@
             box-shadow:
             0 0 25px rgba(255,191,36,0.4);
         }
-
-        /* LIGHTBOX */
 
         #lightbox{
 
@@ -308,8 +299,6 @@
 
             cursor:pointer;
         }
-
-        /* RESPONSIVE */
 
         @media(max-width:768px){
 
@@ -370,15 +359,11 @@
     <div class="hero-content">
 
         <h1>
-
             {{ project.title }}
-
         </h1>
 
         <p>
-
             Premium Construction Project By SM Construction
-
         </p>
 
     </div>
@@ -391,27 +376,21 @@
     <!-- MAIN IMAGE -->
 
     {% set img = project.image %}
-<img class="project-image"
-     src="{{ img if img and 'http' in img else url_for('static', filename='uploads/' + img) }}"
-     alt="{{ project.title }}">
+    <img class="project-image"
+         src="{% if img %}
+                {{ img if 'http' in img else url_for('static', filename='uploads/' + img) }}
+              {% else %}
+                {{ url_for('static', filename='img/default.jpg') }}
+              {% endif %}"
+         alt="{{ project.title }}">
 
     <!-- DESCRIPTION -->
 
     <div class="content-box">
 
-        <h2>
+        <h2>Project Overview</h2>
 
-            Project Overview
-
-        </h2>
-
-        <p>
-
-            {{ project.description }}
-
-        </p>
-
-        <!-- INFO -->
+        <p>{{ project.description }}</p>
 
         <div class="info-grid">
 
@@ -419,17 +398,9 @@
 
                 <i class="fa fa-map-marker"></i>
 
-                <h3>
+                <h3>Location</h3>
 
-                    Location
-
-                </h3>
-
-                <p>
-
-                    {{ project.location }}
-
-                </p>
+                <p>{{ project.location }}</p>
 
             </div>
 
@@ -437,17 +408,9 @@
 
                 <i class="fa fa-calendar"></i>
 
-                <h3>
+                <h3>Completion Year</h3>
 
-                    Completion Year
-
-                </h3>
-
-                <p>
-
-                    {{ project.completion_year }}
-
-                </p>
+                <p>{{ project.completion_year }}</p>
 
             </div>
 
@@ -455,29 +418,16 @@
 
                 <i class="fa fa-user"></i>
 
-                <h3>
+                <h3>Client</h3>
 
-                    Client
-
-                </h3>
-
-                <p>
-
-                    {{ project.client }}
-
-                </p>
+                <p>{{ project.client }}</p>
 
             </div>
 
         </div>
 
-        <!-- BACK -->
-
-        <a href="/"
-           class="back-btn">
-
+        <a href="/" class="back-btn">
            ← Back To Home
-
         </a>
 
     </div>
@@ -486,18 +436,18 @@
 
     <div class="content-box">
 
-        <h2>
-
-            Project Gallery
-
-        </h2>
+        <h2>Project Gallery</h2>
 
         <div class="gallery-grid">
 
             {% for image in gallery %}
 
             <img class="gallery-image"
-                 src="{{ image.image if image.image and 'http' in image.image else url_for('static', filename='uploads/' + image.image) }}"
+                 src="{% if image.image %}
+                        {{ image.image if 'http' in image.image else url_for('static', filename='uploads/' + image.image) }}
+                      {% else %}
+                        {{ url_for('static', filename='img/default.jpg') }}
+                      {% endif %}"
                  alt="Project Gallery Image">
 
             {% endfor %}
@@ -512,17 +462,12 @@
 
 <div id="lightbox">
 
-    <span id="closeLightbox">
-
-        &times;
-
-    </span>
+    <span id="closeLightbox">&times;</span>
 
     <img id="lightboxImg">
 
 </div>
 
-<!-- JS -->
 <script src="{{ url_for('static',
 filename='js/script.js') }}"></script>
 

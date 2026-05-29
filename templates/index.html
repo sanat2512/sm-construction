@@ -9,17 +9,19 @@
           content="width=device-width, initial-scale=1.0">
 
     <meta name="description"
-content="SM Construction is a trusted construction company in Madhya Pradesh offering residential, commercial and interior design services with quality and modern techniques.">
+          content="SM Construction is a trusted construction company in Madhya Pradesh offering residential, commercial and interior design services with quality and modern techniques.">
 
     <meta name="keywords"
           content="Construction, Building, Contractor, Interior, Civil Work">
 
     <meta name="author"
           content="SM Construction">
+
     <meta property="og:title" content="SM Construction">
     <meta property="og:description" content="Trusted construction company in Madhya Pradesh">
     <meta property="og:image" content="{{ url_for('static', filename='images/logo.png') }}">
-    <meta property="og:type" content="website">     
+    <meta property="og:type" content="website">
+
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="SM Construction">
     <meta name="twitter:description" content="Best construction services in Madhya Pradesh">
@@ -50,9 +52,6 @@ content="SM Construction is a trusted construction company in Madhya Pradesh off
 
 <body>
 
-<!-- =========================
-     HEADER
-========================= -->
 <header class="header">
 
     <div class="logo-box">
@@ -63,7 +62,6 @@ content="SM Construction is a trusted construction company in Madhya Pradesh off
         <div class="logo-text">
 
             <h2>SM Construction</h2>
-
             <p>BUILDING YOUR DREAMS</p>
 
         </div>
@@ -74,76 +72,37 @@ content="SM Construction is a trusted construction company in Madhya Pradesh off
 
         <ul class="nav-links">
 
-            <li>
-                <a href="/">Home</a>
-            </li>
-
-            <li>
-                <a href="#services">Services</a>
-            </li>
-
-            <li>
-                <a href="#projects">Projects</a>
-            </li>
-
-            <li>
-                <a href="#about">About</a>
-            </li>
-
-            <li>
-                <a href="#contact">Contact</a>
-            </li>
+            <li><a href="/">Home</a></li>
+            <li><a href="#services">Services</a></li>
+            <li><a href="#projects">Projects</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#contact">Contact</a></li>
 
         </ul>
 
-        <!-- CALL BUTTON -->
-        <a href="tel:+917987765329"
-           class="call-btn">
+        <a href="tel:+917987765329" class="call-btn">Call Now</a>
 
-           Call Now
-
-        </a>
-
-        <!-- MOBILE MENU -->
-        <div class="hamburger"
-             onclick="toggleMenu()">
-
+        <div class="hamburger" onclick="toggleMenu()">
             <i class="fa fa-bars"></i>
-
         </div>
 
     </nav>
 
 </header>
 
-<!-- =========================
-     HERO SECTION
-========================= -->
+<!-- HERO -->
 <section class="hero">
 
     <div class="hero-content">
 
         <h1>We Build Your Dream</h1>
 
-        <p>
-            Premium Construction • Strong Structures • Trusted Work
-        </p>
+        <p>Premium Construction • Strong Structures • Trusted Work</p>
 
         <div class="hero-buttons">
 
-            <a href="#contact"
-               class="btn-primary">
-
-               Get Quote
-
-            </a>
-
-            <a href="#projects"
-               class="btn-secondary">
-
-               View Projects
-
-            </a>
+            <a href="#contact" class="btn-primary">Get Quote</a>
+            <a href="#projects" class="btn-secondary">View Projects</a>
 
         </div>
 
@@ -151,17 +110,10 @@ content="SM Construction is a trusted construction company in Madhya Pradesh off
 
 </section>
 
-<!-- =========================
-     SERVICES
-========================= -->
-<section id="services"
-         class="section">
+<!-- SERVICES -->
+<section id="services" class="section">
 
-    <h2 class="section-title">
-
-        Our Services
-
-    </h2>
+    <h2 class="section-title">Our Services</h2>
 
     <div class="grid">
 
@@ -173,22 +125,21 @@ content="SM Construction is a trusted construction company in Madhya Pradesh off
 
             <div class="project-card">
 
-                {% set img = service.image %}
-
-<img src="{{ img if img and 'http' in img else url_for('static', filename='uploads/' + img) }}"
-     alt="{{ service.name }}">
+                {% if service.image %}
+                    {% if service.image.startswith('http') %}
+                        <img src="{{ service.image }}" alt="{{ service.name }}" loading="lazy">
+                    {% else %}
+                        <img src="{{ url_for('static', filename='uploads/' ~ service.image) }}"
+                             alt="{{ service.name }}" loading="lazy">
+                    {% endif %}
+                {% else %}
+                    <img src="{{ url_for('static', filename='images/default.png') }}"
+                         alt="default image" loading="lazy">
+                {% endif %}
 
                 <div class="project-overlay">
-
                     <h3>{{ service.name }}</h3>
-
-                    <p>
-
-                        Click to explore our
-                        {{ service.name }} projects
-
-                    </p>
-
+                    <p>Click to explore our {{ service.name }} projects</p>
                 </div>
 
             </div>
@@ -201,47 +152,29 @@ content="SM Construction is a trusted construction company in Madhya Pradesh off
 
 </section>
 
-<!-- =========================
-     ABOUT SECTION
-========================= -->
-<section id="about"
-         class="about">
+<!-- ABOUT -->
+<section id="about" class="about">
 
     <div>
 
-        <h2>
-
-            About SM Construction
-
-        </h2>
+        <h2>About SM Construction</h2>
 
         <p>
-
             We are a trusted construction company
             delivering high-quality residential and
-            commercial projects.
-
-            With skilled engineers and modern
-            techniques, we ensure strength,
+            commercial projects. With skilled engineers
+            and modern techniques, we ensure strength,
             safety and design excellence.
-
         </p>
 
     </div>
 
 </section>
 
-<!-- =========================
-     PROJECT SLIDER
-========================= -->
-<section id="projects"
-         class="project-slider">
+<!-- PROJECTS -->
+<section id="projects" class="project-slider">
 
-    <h2 class="section-title">
-
-        Our Top Projects
-
-    </h2>
+    <h2 class="section-title">Our Top Projects</h2>
 
     <div class="swiper mySwiper">
 
@@ -253,23 +186,21 @@ content="SM Construction is a trusted construction company in Madhya Pradesh off
                class="swiper-slide"
                style="text-decoration:none;color:white;">
 
-                <img src="{{ project.image if project.image and 'http' in project.image else url_for('static', filename='uploads/' + project.image) }}">
-                alt="{{ project.title }}">
+                {% if project.image %}
+                    {% if project.image.startswith('http') %}
+                        <img src="{{ project.image }}" alt="{{ project.title }}" loading="lazy">
+                    {% else %}
+                        <img src="{{ url_for('static', filename='uploads/' ~ project.image) }}"
+                             alt="{{ project.title }}" loading="lazy">
+                    {% endif %}
+                {% else %}
+                    <img src="{{ url_for('static', filename='images/default.png') }}"
+                         alt="default image" loading="lazy">
+                {% endif %}
 
                 <div class="slide-text">
-
-                    <h3>
-
-                        {{ project.title }}
-
-                    </h3>
-
-                    <p>
-
-                        {{ project.description }}
-
-                    </p>
-
+                    <h3>{{ project.title }}</h3>
+                    <p>{{ project.description }}</p>
                 </div>
 
             </a>
@@ -278,158 +209,61 @@ content="SM Construction is a trusted construction company in Madhya Pradesh off
 
         </div>
 
-        <!-- SLIDER BUTTONS -->
         <div class="swiper-button-next"></div>
-
         <div class="swiper-button-prev"></div>
-
         <div class="swiper-pagination"></div>
 
     </div>
 
 </section>
 
-<!-- =========================
-     CONTACT SECTION
-========================= -->
-<section id="contact"
-         class="contact">
+<!-- CONTACT -->
+<section id="contact" class="contact">
 
-    <h2>
+    <h2>Contact Us</h2>
 
-        Contact Us
+    <p><i class="fa fa-map-marker"></i> Verma Colony Ward No. 2, Itarsi, Madhya Pradesh</p>
+    <p><i class="fa fa-phone"></i> +91 7987765329</p>
 
-    </h2>
-
-    <p>
-
-        <i class="fa fa-map-marker"></i>
-
-        Verma Colony Ward No. 2,
-        Itarsi, Madhya Pradesh
-
-    </p>
-
-    <p>
-
-        <i class="fa fa-phone"></i>
-
-        +91 7987765329
-
-    </p>
-
-    <!-- WHATSAPP -->
-    <a href="https://wa.me/917987765329"
-       target="_blank"
-       class="btn-primary">
-
-       WhatsApp Us
-
+    <a href="https://wa.me/917987765329" target="_blank" class="btn-primary">
+        WhatsApp Us
     </a>
 
-    <!-- CONTACT FORM -->
-    <form action="/contact"
-          method="POST"
-          class="contact-form">
+    <form action="/contact" method="POST" class="contact-form">
 
-        <input type="text"
-               name="name"
-               placeholder="Your Name"
-               required>
+        <input type="text" name="name" placeholder="Your Name" required>
+        <input type="tel" name="phone" placeholder="Phone Number" required>
 
-        <input type="tel"
-               name="phone"
-               placeholder="Phone Number"
-               required>
+        <textarea name="message" placeholder="Your Message" rows="5" required></textarea>
 
-        <textarea name="message"
-                  placeholder="Your Message"
-                  rows="5"
-                  required></textarea>
-
-        <button type="submit"
-                class="btn-primary">
-
-            Send Message
-
-        </button>
+        <button type="submit" class="btn-primary">Send Message</button>
 
     </form>
 
 </section>
 
-<!-- =========================
-     STATS
-========================= -->
+<!-- STATS -->
 <section class="stats">
 
-    <div class="stat-box">
-
-        <h2>120+</h2>
-
-        <p>Projects Completed</p>
-
-    </div>
-
-    <div class="stat-box">
-
-        <h2>10+</h2>
-
-        <p>Years Experience</p>
-
-    </div>
-
-    <div class="stat-box">
-
-        <h2>99%</h2>
-
-        <p>Client Satisfaction</p>
-
-    </div>
-
-    <div class="stat-box">
-
-        <h2>24/7</h2>
-
-        <p>Support</p>
-
-    </div>
+    <div class="stat-box"><h2>120+</h2><p>Projects Completed</p></div>
+    <div class="stat-box"><h2>10+</h2><p>Years Experience</p></div>
+    <div class="stat-box"><h2>99%</h2><p>Client Satisfaction</p></div>
+    <div class="stat-box"><h2>24/7</h2><p>Support</p></div>
 
 </section>
 
-<!-- =========================
-     FOOTER
-========================= -->
+<!-- FOOTER -->
 <footer>
-
-    <p>
-
-        © 2026 SM Construction |
-        Built with Quality & Trust
-
-    </p>
-
+    <p>© 2026 SM Construction | Built with Quality & Trust</p>
 </footer>
 
-<!-- =========================
-     WHATSAPP FLOAT
-========================= -->
-<a href="https://wa.me/917987765329"
-   class="whatsapp-float"
-   target="_blank">
-
+<!-- WHATSAPP -->
+<a href="https://wa.me/917987765329" class="whatsapp-float" target="_blank">
     <i class="fa fa-whatsapp"></i>
-
 </a>
 
-<!-- =========================
-     SCRIPTS
-========================= -->
-
-<!-- SWIPER -->
+<!-- SCRIPTS -->
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-
-<!-- MAIN JS -->
 <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 
 </body>

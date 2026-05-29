@@ -31,7 +31,12 @@
 
             background-image: linear-gradient(rgba(0, 0, 0, 0.6),
                 rgba(0, 0, 0, 0.6)),
-            url('{% if "http" in service.image %}{{ service.image }}{% else %}{{ url_for("static", filename="uploads/" + service.image) }}{% endif %}');
+
+            url('{% if service.image %}
+                    {{ service.image if "http" in service.image else url_for("static", filename="uploads/" + service.image) }}
+                 {% else %}
+                    {{ url_for("static", filename="img/default.jpg") }}
+                 {% endif %}');
 
             background-size: cover;
             background-position: center;
@@ -195,8 +200,6 @@
             line-height: 1.7;
         }
 
-        /* RESPONSIVE */
-
         @media(max-width:768px) {
 
             .service-hero-content h1 {
@@ -285,7 +288,15 @@
             <a href="/project/{{ project.id }}" style="text-decoration:none;color:white;">
 
                 <div class="project-card">
-<img src="{{ project.image }}" alt="{{ project.title }}">
+
+                    {% if project.image %}
+                        <img src="{{ project.image if 'http' in project.image else url_for('static', filename='uploads/' + project.image) }}"
+                             alt="{{ project.title }}">
+                    {% else %}
+                        <img src="{{ url_for('static', filename='img/default.jpg') }}"
+                             alt="{{ project.title }}">
+                    {% endif %}
+
                     <div class="project-content">
 
                         <h3>
