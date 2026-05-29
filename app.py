@@ -5,30 +5,44 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from functools import wraps
 import os
 import uuid
+import pymysql
 
+pymysql.install_as_MySQLdb()
+
+from dotenv import load_dotenv
+load_dotenv()
+print("HOST:", os.getenv("MYSQL_HOST"))
+print("DB:", os.getenv("MYSQL_DB"))
 app = Flask(__name__)
 
 # =========================
 # SECURITY
 # =========================
-app.secret_key = os.environ.get("SECRET_KEY", "sm_construction_secure_key")
+app.secret_key = os.environ.get(
+    "SECRET_KEY",
+    "sm_construction_secure_key"
+)
 
 app.config['SESSION_COOKIE_HTTPONLY'] = True
 app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
 
-# only enable in HTTPS hosting
+# enable only on HTTPS hosting
 # app.config['SESSION_COOKIE_SECURE'] = True
 
-# upload size limit (10MB)
+# upload limit
 app.config['MAX_CONTENT_LENGTH'] = 10 * 1024 * 1024
 
 
 def login_required(f):
+
     @wraps(f)
     def wrapper(*args, **kwargs):
+
         if "admin_id" not in session:
             return redirect("/login")
+
         return f(*args, **kwargs)
+
     return wrapper
 
 
@@ -36,27 +50,52 @@ def login_required(f):
 # DB CONFIG
 # =========================
 app.config['SQLALCHEMY_DATABASE_URI'] = (
-    "mysql+pymysql://root:@localhost/sm_construction"
+    "mysql+pymysql://VszFYNjvEcieXTk.root:M8lYQzas606rnjHX@"
+    "gateway01.ap-southeast-1.prod.alicloud.tidbcloud.com:4000/"
+    "sm_construction?ssl_verify_cert=false"
 )
+
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
-    "pool_pre_ping": True
+    "pool_pre_ping": True,
+    "connect_args": {
+        "ssl": {
+            "ssl_mode": "REQUIRED"
+        }
+    }
 }
+
 db = SQLAlchemy(app)
 
 # =========================
 # UPLOAD CONFIG
 # =========================
-UPLOAD_FOLDER = os.path.join(app.root_path, "static", "uploads")
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+UPLOAD_FOLDER = os.path.join(
+    app.root_path,
+    "static",
+    "uploads"
+)
 
-ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'webp'}
+os.makedirs(
+    UPLOAD_FOLDER,
+    exist_ok=True
+)
+
+ALLOWED_EXTENSIONS = {
+    'png',
+    'jpg',
+    'jpeg',
+    'webp'
+}
 
 
 def allowed_file(filename):
+
     return (
         '.' in filename and
-        filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+        filename.rsplit('.', 1)[1].lower()
+        in ALLOWED_EXTENSIONS
     )
 
 
@@ -64,29 +103,56 @@ def allowed_file(filename):
 # MODELS
 # =========================
 class Service(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
 
-    name = db.Column(db.String(100), nullable=False)
+    id = db.Column(
+        db.Integer,
+        primary_key=True
+    )
 
-    description = db.Column(db.Text)
+    name = db.Column(
+        db.String(100),
+        nullable=False
+    )
 
-    image = db.Column(db.String(200))
+    description = db.Column(
+        db.Text
+    )
+
+    image = db.Column(
+        db.String(200)
+    )
 
 
 class Project(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
 
-    title = db.Column(db.String(200))
+    id = db.Column(
+        db.Integer,
+        primary_key=True
+    )
 
-    description = db.Column(db.Text)
+    title = db.Column(
+        db.String(200)
+    )
 
-    image = db.Column(db.String(300))
+    description = db.Column(
+        db.Text
+    )
 
-    location = db.Column(db.String(200))
+    image = db.Column(
+        db.String(300)
+    )
 
-    completion_year = db.Column(db.String(50))
+    location = db.Column(
+        db.String(200)
+    )
 
-    client = db.Column(db.String(200))
+    completion_year = db.Column(
+        db.String(50)
+    )
+
+    client = db.Column(
+        db.String(200)
+    )
 
     service_id = db.Column(
         db.Integer,
@@ -100,9 +166,15 @@ class Project(db.Model):
 
 
 class ProjectImage(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
 
-    image = db.Column(db.String(300))
+    id = db.Column(
+        db.Integer,
+        primary_key=True
+    )
+
+    image = db.Column(
+        db.String(300)
+    )
 
     project_id = db.Column(
         db.Integer,
@@ -111,13 +183,23 @@ class ProjectImage(db.Model):
 
 
 class Contact(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
 
-    name = db.Column(db.String(200))
+    id = db.Column(
+        db.Integer,
+        primary_key=True
+    )
 
-    phone = db.Column(db.String(50))
+    name = db.Column(
+        db.String(200)
+    )
 
-    message = db.Column(db.Text)
+    phone = db.Column(
+        db.String(50)
+    )
+
+    message = db.Column(
+        db.Text
+    )
 
     is_read = db.Column(
         db.Boolean,
@@ -126,14 +208,20 @@ class Contact(db.Model):
 
 
 class Admin(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+
+    id = db.Column(
+        db.Integer,
+        primary_key=True
+    )
 
     username = db.Column(
         db.String(100),
         unique=True
     )
 
-    password = db.Column(db.String(200))
+    password = db.Column(
+        db.String(200)
+    )
 
 
 # =========================
@@ -142,10 +230,14 @@ class Admin(db.Model):
 @app.route("/")
 def home():
 
+    projects = Project.query.all()
+
+    services = Service.query.all()
+
     return render_template(
         "index.html",
-        projects=Project.query.all(),
-        services=Service.query.all()
+        projects=projects,
+        services=services
     )
 
 
@@ -188,25 +280,31 @@ def project_detail(id):
 
 
 # =========================
-# CONTACT
+# CONTACT FORM
 # =========================
-@app.route("/contact", methods=["POST"])
+@app.route(
+    "/contact",
+    methods=["POST"]
+)
 def contact():
 
     name = request.form.get("name")
+
     phone = request.form.get("phone")
+
     message = request.form.get("message")
 
     if not name or not phone or not message:
+
         return redirect("/#contact")
 
-    db.session.add(
-        Contact(
-            name=name,
-            phone=phone,
-            message=message
-        )
+    new_contact = Contact(
+        name=name,
+        phone=phone,
+        message=message
     )
+
+    db.session.add(new_contact)
 
     db.session.commit()
 
@@ -216,16 +314,23 @@ def contact():
 # =========================
 # LOGIN
 # =========================
-@app.route("/login", methods=["GET", "POST"])
+@app.route(
+    "/login",
+    methods=["GET", "POST"]
+)
 def login():
 
     error = None
 
     if request.method == "POST":
 
-        username = request.form.get("username")
+        username = request.form.get(
+            "username"
+        )
 
-        password = request.form.get("password")
+        password = request.form.get(
+            "password"
+        )
 
         admin = Admin.query.filter_by(
             username=username
@@ -235,6 +340,7 @@ def login():
             admin.password,
             password
         ):
+
             session["admin_id"] = admin.id
 
             return redirect("/admin")
@@ -261,20 +367,29 @@ def logout():
 # =========================
 # ADMIN
 # =========================
-@app.route("/admin", methods=["GET", "POST"])
+@app.route(
+    "/admin",
+    methods=["GET", "POST"]
+)
 @login_required
 def admin():
 
     if request.method == "POST":
 
-        image = request.files.get("image")
+        image = request.files.get(
+            "image"
+        )
 
-        if image and allowed_file(image.filename):
+        if image and allowed_file(
+            image.filename
+        ):
 
             filename = (
                 str(uuid.uuid4()) +
                 "_" +
-                secure_filename(image.filename)
+                secure_filename(
+                    image.filename
+                )
             )
 
             image.save(
@@ -285,32 +400,53 @@ def admin():
             )
 
             project = Project(
-                title=request.form.get("title"),
-                description=request.form.get("description"),
+                title=request.form.get(
+                    "title"
+                ),
+
+                description=request.form.get(
+                    "description"
+                ),
+
                 image=filename,
-                location=request.form.get("location"),
-                completion_year=request.form.get("completion_year"),
-                client=request.form.get("client"),
-                service_id=request.form.get("service_id")
+
+                location=request.form.get(
+                    "location"
+                ),
+
+                completion_year=request.form.get(
+                    "completion_year"
+                ),
+
+                client=request.form.get(
+                    "client"
+                ),
+
+                service_id=request.form.get(
+                    "service_id"
+                )
             )
 
             db.session.add(project)
 
             db.session.commit()
 
-            # gallery upload
             gallery_files = request.files.getlist(
                 "gallery_images"
             )
 
             for file in gallery_files:
 
-                if file and allowed_file(file.filename):
+                if file and allowed_file(
+                    file.filename
+                ):
 
                     gname = (
                         str(uuid.uuid4()) +
                         "_" +
-                        secure_filename(file.filename)
+                        secure_filename(
+                            file.filename
+                        )
                     )
 
                     file.save(
@@ -341,62 +477,48 @@ def admin():
 
     project_images = {}
 
-    project_images = {}
-
     for p in Project.query.all():
-     project_images[p.id] = ProjectImage.query.filter_by(
-        project_id=p.id
-    ).all()
 
-    # admin route
+        project_images[p.id] = (
+            ProjectImage.query.filter_by(
+                project_id=p.id
+            ).all()
+        )
+
     return render_template(
-    "admin.html",
-    projects=Project.query.all(),
-    services=Service.query.all(),
-    contacts=Contact.query.all(),
-    total_msgs=total_msgs,
-    unread_msgs=unread_msgs,
-    read_msgs=read_msgs,
-    project_images=project_images
-)
-
-# =========================
-# DELETE GALLERY IMAGE
-# =========================
-@app.route("/delete-gallery-image/<int:id>", methods=["POST"])
-@login_required
-def delete_gallery_image(id):
-
-    image = ProjectImage.query.get_or_404(id)
-
-    path = os.path.join(
-        UPLOAD_FOLDER,
-        image.image
+        "admin.html",
+        projects=Project.query.all(),
+        services=Service.query.all(),
+        contacts=Contact.query.all(),
+        total_msgs=total_msgs,
+        unread_msgs=unread_msgs,
+        read_msgs=read_msgs,
+        project_images=project_images
     )
 
-    if os.path.exists(path):
-        os.remove(path)
 
-    db.session.delete(image)
-
-    db.session.commit()
-
-    return redirect("/admin")
 # =========================
 # ADD SERVICE
 # =========================
-@app.route("/add-service", methods=["POST"])
+@app.route(
+    "/add-service",
+    methods=["POST"]
+)
 @login_required
 def add_service():
 
     image = request.files.get("image")
 
-    if image and allowed_file(image.filename):
+    if image and allowed_file(
+        image.filename
+    ):
 
         filename = (
             str(uuid.uuid4()) +
             "_" +
-            secure_filename(image.filename)
+            secure_filename(
+                image.filename
+            )
         )
 
         image.save(
@@ -406,13 +528,15 @@ def add_service():
             )
         )
 
-        db.session.add(
-            Service(
-                name=request.form.get("name"),
-                description=request.form.get("description"),
-                image=filename
-            )
+        service = Service(
+            name=request.form.get("name"),
+            description=request.form.get(
+                "description"
+            ),
+            image=filename
         )
+
+        db.session.add(service)
 
         db.session.commit()
 
@@ -422,13 +546,15 @@ def add_service():
 # =========================
 # DELETE SERVICE
 # =========================
-@app.route("/delete-service/<int:id>", methods=["POST"])
+@app.route(
+    "/delete-service/<int:id>",
+    methods=["POST"]
+)
 @login_required
 def delete_service(id):
 
     service = Service.query.get_or_404(id)
 
-    # delete service image
     if service.image:
 
         path = os.path.join(
@@ -437,9 +563,11 @@ def delete_service(id):
         )
 
         if os.path.exists(path):
+
             os.remove(path)
 
     for p in service.projects:
+
         p.service_id = None
 
     db.session.delete(service)
@@ -452,7 +580,10 @@ def delete_service(id):
 # =========================
 # EDIT PROJECT
 # =========================
-@app.route("/edit-project/<int:id>", methods=["GET", "POST"])
+@app.route(
+    "/edit-project/<int:id>",
+    methods=["GET", "POST"]
+)
 @login_required
 def edit_project(id):
 
@@ -460,17 +591,25 @@ def edit_project(id):
 
     if request.method == "POST":
 
-        project.title = request.form.get("title")
+        project.title = request.form.get(
+            "title"
+        )
 
-        project.description = request.form.get("description")
+        project.description = request.form.get(
+            "description"
+        )
 
-        project.location = request.form.get("location")
+        project.location = request.form.get(
+            "location"
+        )
 
         project.completion_year = request.form.get(
             "completion_year"
         )
 
-        project.client = request.form.get("client")
+        project.client = request.form.get(
+            "client"
+        )
 
         project.service_id = request.form.get(
             "service_id"
@@ -478,9 +617,10 @@ def edit_project(id):
 
         image = request.files.get("image")
 
-        if image and allowed_file(image.filename):
+        if image and allowed_file(
+            image.filename
+        ):
 
-            # delete old image
             if project.image:
 
                 old_path = os.path.join(
@@ -488,13 +628,18 @@ def edit_project(id):
                     project.image
                 )
 
-                if os.path.exists(old_path):
+                if os.path.exists(
+                    old_path
+                ):
+
                     os.remove(old_path)
 
             filename = (
                 str(uuid.uuid4()) +
                 "_" +
-                secure_filename(image.filename)
+                secure_filename(
+                    image.filename
+                )
             )
 
             image.save(
@@ -520,13 +665,15 @@ def edit_project(id):
 # =========================
 # DELETE PROJECT
 # =========================
-@app.route("/delete/<int:id>", methods=["POST"])
+@app.route(
+    "/delete/<int:id>",
+    methods=["POST"]
+)
 @login_required
 def delete_project(id):
 
     project = Project.query.get_or_404(id)
 
-    # delete main image
     if project.image:
 
         path = os.path.join(
@@ -535,9 +682,9 @@ def delete_project(id):
         )
 
         if os.path.exists(path):
+
             os.remove(path)
 
-    # delete gallery
     gallery = ProjectImage.query.filter_by(
         project_id=id
     ).all()
@@ -550,11 +697,40 @@ def delete_project(id):
         )
 
         if os.path.exists(gpath):
+
             os.remove(gpath)
 
         db.session.delete(g)
 
     db.session.delete(project)
+
+    db.session.commit()
+
+    return redirect("/admin")
+
+
+# =========================
+# DELETE GALLERY IMAGE
+# =========================
+@app.route(
+    "/delete-gallery-image/<int:id>",
+    methods=["POST"]
+)
+@login_required
+def delete_gallery_image(id):
+
+    image = ProjectImage.query.get_or_404(id)
+
+    path = os.path.join(
+        UPLOAD_FOLDER,
+        image.image
+    )
+
+    if os.path.exists(path):
+
+        os.remove(path)
+
+    db.session.delete(image)
 
     db.session.commit()
 
@@ -633,23 +809,36 @@ def change_password():
             admin.password,
             current
         ):
-            message = "Wrong current password"
+
+            message = (
+                "Wrong current password"
+            )
 
         elif new != confirm:
-            message = "Passwords do not match"
+
+            message = (
+                "Passwords do not match"
+            )
 
         elif len(new) < 5:
-            message = "Password too short"
+
+            message = (
+                "Password too short"
+            )
 
         else:
 
-            admin.password = generate_password_hash(
-                new
+            admin.password = (
+                generate_password_hash(
+                    new
+                )
             )
 
             db.session.commit()
 
-            message = "Password updated successfully"
+            message = (
+                "Password updated successfully"
+            )
 
     return render_template(
         "change_password.html",
@@ -662,7 +851,13 @@ def change_password():
 # =========================
 with app.app_context():
 
-    db.create_all()
+    try:
+
+        db.create_all()
+
+    except Exception as e:
+
+        print("DB ERROR:", e)
 
     if not Admin.query.filter_by(
         username="admin"
@@ -683,5 +878,16 @@ with app.app_context():
 # =========================
 # RUN
 # =========================
+
 if __name__ == "__main__":
-    app.run(debug=True)
+
+    app.run(
+        host="0.0.0.0",
+        port=int(
+            os.environ.get(
+                "PORT",
+                10000
+            )
+        ),
+        debug=False
+    )
