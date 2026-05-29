@@ -220,29 +220,29 @@ button{
 <div class="stats" id="stats">
 
     <div class="card">
-    <h2>{{ projects|length }}</h2>
-    <p>Projects</p>
-</div>
+        <h2>{{ projects|length }}</h2>
+        <p>Projects</p>
+    </div>
 
-<div class="card">
-    <h2>{{ services|length }}</h2>
-    <p>Services</p>
-</div>
+    <div class="card">
+        <h2>{{ services|length }}</h2>
+        <p>Services</p>
+    </div>
 
-<div class="card">
-    <h2>{{ total_msgs }}</h2>
-    <p>Total Messages</p>
-</div>
+    <div class="card">
+        <h2>{{ total_msgs }}</h2>
+        <p>Total Messages</p>
+    </div>
 
-<div class="card">
-    <h2>{{ unread_msgs }}</h2>
-    <p>Unread Messages</p>
-</div>
+    <div class="card">
+        <h2>{{ unread_msgs }}</h2>
+        <p>Unread Messages</p>
+    </div>
 
-<div class="card">
-    <h2>{{ read_msgs }}</h2>
-    <p>Read Messages</p>
-</div>
+    <div class="card">
+        <h2>{{ read_msgs }}</h2>
+        <p>Read Messages</p>
+    </div>
 
 </div>
 
@@ -295,11 +295,14 @@ button{
 {% for service in services %}
 <div class="box">
 
-    <img src="{% if 'http' in service.image %}
-          {{ service.image }}
-          {% else %}
-          {{ url_for('static', filename='uploads/' + service.image) }}
-          {% endif %}">
+    <img src="{% if service.image and 'http' in service.image %}
+              {{ service.image }}
+              {% elif service.image %}
+              {{ url_for('static', filename='uploads/' + service.image) }}
+              {% else %}
+              {{ url_for('static', filename='images/default.png') }}
+              {% endif %}">
+
     <h3>{{ service.name }}</h3>
     <p>{{ service.description }}</p>
 
@@ -321,12 +324,14 @@ button{
 <div class="grid">
 {% for project in projects %}
 <div class="box">
-<img src="{% if 'http' in project.image %}
+
+<img src="{% if project.image and 'http' in project.image %}
           {{ project.image }}
-          {% else %}
+          {% elif project.image %}
           {{ url_for('static', filename='uploads/' + project.image) }}
+          {% else %}
+          {{ url_for('static', filename='images/default.png') }}
           {% endif %}">
-    
 
     <h3>{{ project.title }}</h3>
     <p>{{ project.description }}</p>
@@ -341,66 +346,34 @@ button{
 
 {% if gallery %}
 
-<h4 style="
-    margin-top:15px;
-    margin-bottom:10px;
-    color:#ffbf24;
-">
+<h4 style="margin-top:15px;margin-bottom:10px;color:#ffbf24;">
     Gallery
 </h4>
 
-<div style="
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:8px;
-">
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;">
 
 {% for img in gallery %}
 
 <div style="position:relative;">
 
     <img 
-        src="{% if 'http' in img.image %}
-     {{ img.image }}
-     {% else %}
-     {{ url_for('static', filename='uploads/' + img.image) }}
-     {% endif %}"
-        style="
-            width:100%;
-            height:80px;
-            object-fit:cover;
-            border-radius:8px;
-        "
+        src="{% if img.image and 'http' in img.image %}
+             {{ img.image }}
+             {% elif img.image %}
+             {{ url_for('static', filename='uploads/' + img.image) }}
+             {% else %}
+             {{ url_for('static', filename='images/default.png') }}
+             {% endif %}"
+        style="width:100%;height:80px;object-fit:cover;border-radius:8px;"
     >
 
-    <form 
-        action="/delete-gallery-image/{{ img.id }}"
-        method="POST"
-        style="
-            position:absolute;
-            top:5px;
-            right:5px;
-            background:none;
-            padding:0;
-            margin:0;
-        "
-        onsubmit="return confirm('Delete image?')"
-    >
+    <form action="/delete-gallery-image/{{ img.id }}"
+          method="POST"
+          style="position:absolute;top:5px;right:5px;background:none;padding:0;margin:0;"
+          onsubmit="return confirm('Delete image?')">
 
-        <button 
-            type="submit"
-            style="
-                background:red;
-                color:white;
-                border:none;
-                width:22px;
-                height:22px;
-                border-radius:50%;
-                cursor:pointer;
-                font-size:12px;
-                padding:0;
-            "
-        >
+        <button type="submit"
+                style="background:red;color:white;border:none;width:22px;height:22px;border-radius:50%;cursor:pointer;font-size:12px;padding:0;">
             ×
         </button>
 
@@ -418,16 +391,16 @@ button{
     Edit
 </a>
 
-    <form action="/delete/{{ project.id }}" method="POST"
-          onsubmit="return confirm('Delete project?')">
-        <button class="delete">Delete</button>
-    </form>
+<form action="/delete/{{ project.id }}" method="POST"
+      onsubmit="return confirm('Delete project?')">
+    <button class="delete">Delete</button>
+</form>
 
 </div>
 {% endfor %}
 </div>
 
-<!-- MESSAGES --> 
+<!-- MESSAGES -->
 <h2 id="messages">Messages</h2>
 
 <div class="grid">
@@ -437,57 +410,26 @@ button{
 <div class="box {% if not msg.is_read %}unread{% endif %}">
 
     <h3>{{ msg.name }}</h3>
-
     <p>{{ msg.phone }}</p>
-
     <p>{{ msg.message }}</p>
 
-    <!-- STATUS -->
     {% if msg.is_read %}
 
-        <p style="
-            color:lime;
-            font-weight:bold;
-            margin-top:10px;
-        ">
+        <p style="color:lime;font-weight:bold;margin-top:10px;">
             ✔ Read
         </p>
 
     {% else %}
 
-        <p style="
-            color:orange;
-            font-weight:bold;
-            margin-top:10px;
-        ">
+        <p style="color:orange;font-weight:bold;margin-top:10px;">
             🔴 Unread
         </p>
 
-        <!-- MARK READ -->
-        <form 
-            action="/mark-read/{{ msg.id }}" 
-            method="POST"
-            style="
-                background:none;
-                padding:0;
-                margin-top:15px;
-                margin-bottom:10px;
-            "
-        >
+        <form action="/mark-read/{{ msg.id }}" method="POST"
+              style="background:none;padding:0;margin-top:15px;margin-bottom:10px;">
 
-            <button 
-                type="submit"
-                style="
-                    width:100%;
-                    padding:12px;
-                    border:none;
-                    border-radius:10px;
-                    background:#ffbf24;
-                    color:black;
-                    font-weight:bold;
-                    cursor:pointer;
-                "
-            >
+            <button type="submit"
+                    style="width:100%;padding:12px;border:none;border-radius:10px;background:#ffbf24;color:black;font-weight:bold;cursor:pointer;">
                 Mark Read
             </button>
 
@@ -495,17 +437,9 @@ button{
 
     {% endif %}
 
-    <!-- DELETE -->
-    <form 
-        action="/delete-message/{{ msg.id }}"
-        method="POST"
-        onsubmit="return confirm('Delete this message?')"
-        style="
-            background:none;
-            padding:0;
-            margin-top:10px;
-        "
-    >
+    <form action="/delete-message/{{ msg.id }}" method="POST"
+          onsubmit="return confirm('Delete this message?')"
+          style="background:none;padding:0;margin-top:10px;">
 
         <button class="delete">
             Delete Message
@@ -518,10 +452,10 @@ button{
 {% endfor %}
 
 </div>
+
 </div>
 </div>
 
-<!-- SEARCH JS -->
 <script src="{{ url_for('static', filename='js/admin.js') }}"></script>
 
 </body>

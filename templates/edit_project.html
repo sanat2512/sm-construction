@@ -262,11 +262,13 @@
 
         <h1>Edit Project</h1>
 
-        <!-- ✅ IMAGE FIXED -->
+        <!-- ✅ IMAGE SAFE FIX (NO STRUCTURE CHANGE) -->
         {% set img = project.image %}
         <img class="project-image"
-             src="{% if img %}
-                    {{ img if 'http' in img else url_for('static', filename='uploads/' + img) }}
+             src="{% if img and 'http' in img %}
+                    {{ img }}
+                  {% elif img %}
+                    {{ url_for('static', filename='uploads/' + img) }}
                   {% else %}
                     {{ url_for('static', filename='img/default.jpg') }}
                   {% endif %}"
