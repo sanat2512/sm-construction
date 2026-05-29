@@ -388,7 +388,7 @@ def admin():
 
         if image and allowed_file(image.filename):
 
-            # ✅ upload to cloudinary
+            # upload main image to cloudinary
             result = cloudinary.uploader.upload(image)
             image_url = result["secure_url"]
 
@@ -406,26 +406,15 @@ def admin():
             db.session.commit()
 
             # =========================
-            # GALLERY IMAGES (STILL LOCAL)
+            # GALLERY IMAGES
             # =========================
             gallery_files = request.files.getlist("gallery_images")
 
             for file in gallery_files:
-
                 if file and allowed_file(file.filename):
 
-                    gname = (
-                        str(uuid.uuid4()) +
-                        "_" +
-                        secure_filename(file.filename)
-                    )
-
-                    file.save(
-                        os.path.join(
-                            UPLOAD_FOLDER,
-                            gname
-                        )
-                    )
+                    result = cloudinary.uploader.upload(file)
+                    gname = result["secure_url"]
 
                     db.session.add(
                         ProjectImage(
@@ -437,15 +426,12 @@ def admin():
             db.session.commit()
 
     total_msgs = Contact.query.count()
-
     unread_msgs = Contact.query.filter_by(is_read=False).count()
-
     read_msgs = Contact.query.filter_by(is_read=True).count()
 
     project_images = {}
 
     for p in Project.query.all():
-
         project_images[p.id] = ProjectImage.query.filter_by(
             project_id=p.id
         ).all()

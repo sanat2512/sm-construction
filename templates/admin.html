@@ -295,7 +295,7 @@ button{
 {% for service in services %}
 <div class="box">
 
-    <img src="{{ url_for('static', filename='uploads/' + service.image) }}">
+    <img src="{{ service.image }}">
     <h3>{{ service.name }}</h3>
     <p>{{ service.description }}</p>
 
