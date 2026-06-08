@@ -560,22 +560,10 @@ def edit_project(id):
 
                     os.remove(old_path)
 
-            filename = (
-                str(uuid.uuid4()) +
-                "_" +
-                secure_filename(
-                    image.filename
-                )
-            )
+        if image and allowed_file(image.filename):
 
-            image.save(
-                os.path.join(
-                    UPLOAD_FOLDER,
-                    filename
-                )
-            )
-
-            project.image = filename
+           result = cloudinary.uploader.upload(image)
+           project.image = result["secure_url"]
 
         db.session.commit()
 
