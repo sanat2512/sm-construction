@@ -1,3 +1,5 @@
+from unittest import result
+
 from flask import Flask, render_template, request, redirect, session
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.utils import secure_filename
@@ -12,7 +14,7 @@ import cloudinary.uploader
 cloudinary.config(
     cloud_name="dzlskdwgd",
     api_key="234567384978218",
-    api_secret="YOUR_API_SECRET"
+    api_secret=os.getenv("CLOUDINARY_SECRET")
 )
 
 pymysql.install_as_MySQLdb()
@@ -66,12 +68,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = (
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
-    "pool_pre_ping": True,
-    "connect_args": {
-        "ssl": {
-            "ssl_mode": "REQUIRED"
-        }
-    }
+    "pool_pre_ping": True
 }
 
 db = SQLAlchemy(app)
@@ -450,48 +447,27 @@ def admin():
 # =========================
 # ADD SERVICE
 # =========================
-@app.route(
-    "/add-service",
-    methods=["POST"]
-)
+@app.route("/add-service", methods=["POST"])
 @login_required
 def add_service():
 
     image = request.files.get("image")
 
-    if image and allowed_file(
-        image.filename
-    ):
+    if image and allowed_file(image.filename):
 
-        filename = (
-            str(uuid.uuid4()) +
-            "_" +
-            secure_filename(
-                image.filename
-            )
-        )
-
-        image.save(
-            os.path.join(
-                UPLOAD_FOLDER,
-                filename
-            )
-        )
+        result = cloudinary.uploader.upload(image)
+        image_url = result["secure_url"]
 
         service = Service(
             name=request.form.get("name"),
-            description=request.form.get(
-                "description"
-            ),
-            image=filename
+            description=request.form.get("description"),
+            image=image_url
         )
 
         db.session.add(service)
-
         db.session.commit()
 
     return redirect("/admin")
-
 
 # =========================
 # DELETE SERVICE
