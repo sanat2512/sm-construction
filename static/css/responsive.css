@@ -261,3 +261,30 @@
         overflow-x: hidden;
     }
 }
+/* =========================
+   MOBILE SIDEBAR FIX (GLOBAL)
+========================= */
+
+@media (max-width: 900px) {
+
+    body.menu-open {
+        overflow: hidden;
+    }
+
+    .navbar .nav-links {
+        position: fixed;
+        top: 80px;
+        left: -100%;
+        width: 100%;
+        height: calc(100vh - 80px);
+        background: #0b1324;
+        flex-direction: column;
+        padding: 30px 20px;
+        transition: 0.3s ease;
+        z-index: 9999;
+    }
+
+    .navbar .nav-links.active {
+        left: 0;
+    }
+}

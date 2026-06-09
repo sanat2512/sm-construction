@@ -361,5 +361,50 @@ document.querySelectorAll("img").forEach(img => {
         });
 
     }
+/* =========================
+   MOBILE MENU IMPROVEMENT (ADD ONLY)
+========================= */
 
+(function () {
+
+    const navLinks = document.querySelector(".nav-links");
+    const hamburger = document.querySelector(".hamburger");
+    const hamburgerIcon = document.querySelector(".hamburger i");
+
+    if (!navLinks || !hamburger) return;
+
+    // Close when clicking outside menu
+    document.addEventListener("click", (e) => {
+
+        const isClickInsideMenu = navLinks.contains(e.target);
+        const isClickHamburger = hamburger.contains(e.target);
+
+        if (!isClickInsideMenu && !isClickHamburger && navLinks.classList.contains("active")) {
+
+            navLinks.classList.remove("active");
+
+            if (hamburgerIcon) {
+                hamburgerIcon.classList.remove("fa-times");
+                hamburgerIcon.classList.add("fa-bars");
+            }
+        }
+
+    });
+
+    // Close on scroll (IMPORTANT for your issue)
+    window.addEventListener("scroll", () => {
+
+        if (navLinks.classList.contains("active")) {
+
+            navLinks.classList.remove("active");
+
+            if (hamburgerIcon) {
+                hamburgerIcon.classList.remove("fa-times");
+                hamburgerIcon.classList.add("fa-bars");
+            }
+        }
+
+    });
+
+})();
 });
