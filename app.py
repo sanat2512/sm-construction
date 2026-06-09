@@ -782,7 +782,7 @@ def change_password():
     )
 @app.route('/googlef2df099dcbb3c3f0.html')
 def google_verification():
-    return send_from_directory('.', 'googlef2df099dcbb3c3f0.html')
+    return send_from_directory(app.root_path, 'googlef2df099dcbb3c3f0.html')
 
 # =========================
 # INIT DB
