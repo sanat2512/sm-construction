@@ -305,7 +305,10 @@ button{
 
     <h3>{{ service.name }}</h3>
     <p>{{ service.description }}</p>
-
+    <!-- EDIT BUTTON -->
+    <a class="edit" href="/edit-service/{{ service.id }}">
+        Edit
+    </a>
     <form action="/delete-service/{{ service.id }}" method="POST"
           onsubmit="return confirm('Delete service?')">
         <button class="delete">Delete</button>

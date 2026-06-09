@@ -469,6 +469,28 @@ def add_service():
 
     return redirect("/admin")
 
+@app.route("/edit-service/<int:id>", methods=["GET", "POST"])
+@login_required
+def edit_service(id):
+
+    service = Service.query.get_or_404(id)
+
+    if request.method == "POST":
+
+        service.name = request.form.get("name")
+        service.description = request.form.get("description")
+
+        image = request.files.get("image")
+
+        if image and allowed_file(image.filename):
+
+            result = cloudinary.uploader.upload(image)
+            service.image = result["secure_url"]
+
+        db.session.commit()
+        return redirect("/admin")
+
+    return render_template("edit_service.html", service=service)
 # =========================
 # DELETE SERVICE
 # =========================
