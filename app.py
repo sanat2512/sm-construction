@@ -1,6 +1,6 @@
 from unittest import result
 
-from flask import Flask, render_template, request, redirect, session
+from flask import Flask, render_template, request, redirect, session, send_from_directory
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.utils import secure_filename
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -780,7 +780,9 @@ def change_password():
         "change_password.html",
         message=message
     )
-
+@app.route('/googlef2df099dcbb3c3f0.html')
+def google_verification():
+    return send_from_directory('.', 'googlef2df099dcbb3c3f0.html')
 
 # =========================
 # INIT DB
