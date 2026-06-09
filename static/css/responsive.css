@@ -239,3 +239,25 @@
         font-size:22px;
     }
 }
+@media (max-width: 900px){
+
+    .sidebar{
+        position: relative !important;
+        width: 100%;
+        min-height: auto;
+        height: auto;
+        padding: 15px;
+    }
+
+    .dashboard{
+        flex-direction: column;
+    }
+
+    .main{
+        padding: 15px;
+    }
+
+    body{
+        overflow-x: hidden;
+    }
+}
