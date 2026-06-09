@@ -784,6 +784,9 @@ def change_password():
 def google_verification():
     return send_from_directory(app.root_path, 'googlef2df099dcbb3c3f0.html')
 
+@app.route('/robots.txt')
+def robots():
+    return send_from_directory('static', 'robots.txt')
 # =========================
 # INIT DB
 # =========================
